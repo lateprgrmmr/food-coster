@@ -7,13 +7,13 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "NodeNext",
+    "module": "CommonJS",
     "target": "ES2022",
-    "moduleResolution": "NodeNext",
-    "types": [],
+    "moduleResolution": "Node10",
+    "esModuleInterop": true,
     // For nodejs:
     // "lib": ["esnext"],
-    // "types": ["node"],
+    "types": ["node", "pg"],
     // and npm install -D @types/node
 
     // Other Outputs
@@ -35,11 +35,11 @@
 
     // Recommended Options
     "strict": true,
-    "jsx": "react-jsx",
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "exclude": ["node_modules", "dist", "drizzle.config.ts"]                                                                                                                                                                                                               
 }
