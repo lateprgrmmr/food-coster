@@ -4,6 +4,7 @@ import db from '../db';
 import { organizations, users, userSessions } from '../db/schema';
 import { randomBytes } from 'crypto';
 import { eq } from 'drizzle-orm';
+import { authenticate } from '../middleware/auth';
 
 const router: Router = express.Router();
 
@@ -52,6 +53,12 @@ router.post('/login', async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: 'Internal server error' });
     }
+});
+
+router.post('/logout', authenticate, async (req, res) => {
+    const token = req.headers.authorization!.slice(7);
+    await db.delete(userSessions).where(eq(userSessions.sessionToken, token));
+    return res.status(200).json({ message: 'Logged out successfully' });
 });
 
 export default router;
