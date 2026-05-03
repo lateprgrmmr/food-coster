@@ -1,0 +1,13 @@
+{                                                                                                                                                                                                                                                                        
+  "name": "food-coster",
+  "private": true,                                                                                                                                                                                                                                                       
+  "version": "1.0.0",
+  "engines": { "node": ">=20" },                                                                                                                                                                                                                                         
+  "packageManager": "pnpm@10.28.1",
+  "scripts": {                                                                                                                                                                                                                                                           
+    "dev": "concurrently --names api,ui -c blue,green \"pnpm --filter @food-coster/api dev\" \"pnpm --filter @food-coster/ui dev\""
+  },                                                                                                                                                                                                                                                                     
+  "devDependencies": {
+    "concurrently": "^9.2.1"                                                                                                                                                                                                                                             
+  }                                                                                                                                                                                                                                                                      
+}
