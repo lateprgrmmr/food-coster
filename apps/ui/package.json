@@ -17,8 +17,12 @@
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^9.0.0",
     "@mui/x-data-grid": "^9.0.4",
+    "@reduxjs/toolkit": "^2.11.2",
+    "cors": "^2.8.6",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react-dom": "^19.2.5",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.14.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
