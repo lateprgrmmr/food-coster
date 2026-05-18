@@ -1,9 +1,9 @@
 import express, { Router } from 'express';
 import bcrypt from 'bcrypt';
 import db from '../db';
-import { organizations, users, userSessions } from '../db/schema';
+import { organizations, users, userSessions, appTokens } from '../db/schema';
 import { randomBytes } from 'crypto';
-import { eq } from 'drizzle-orm';
+import { and, eq, gt, isNull } from 'drizzle-orm';
 import { authenticate } from '../middleware/auth';
 
 const router: Router = express.Router();
@@ -49,6 +49,61 @@ router.post('/login', async (req, res) => {
     const sessionToken = randomBytes(32).toString('hex');
         await db.insert(userSessions).values({ userId: user.id, sessionToken, expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) }); // 30 days
         return res.status(200).json({ token: sessionToken, userId: user.id });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+    }
+    try {
+        const [user] = await db.select().from(users).where(eq(users.email, email));
+        if (user) {
+            const resetToken = randomBytes(32).toString('hex');
+            await db.insert(appTokens).values({
+                userId: user.id,
+                token: resetToken,
+                type: 'password_reset',
+                expiresAt: new Date(Date.now() + 1000 * 60 * 60), // 1 hour
+            });
+            console.log(`[password reset] token for ${email}: ${resetToken}`);
+        }
+        // Always return success to avoid leaking which emails are registered
+        return res.status(200).json({ message: 'If that email exists, a reset token has been printed to the server console.' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+router.post('/reset-password', async (req, res) => {
+    const { token, password } = req.body;
+    if (!token || !password) {
+        return res.status(400).json({ message: 'Token and password are required' });
+    }
+    try {
+        const [resetToken] = await db.select().from(appTokens).where(
+            and(
+                eq(appTokens.token, token),
+                eq(appTokens.type, 'password_reset'),
+                gt(appTokens.expiresAt, new Date()),
+                isNull(appTokens.usedAt),
+            )
+        );
+        if (!resetToken) {
+            return res.status(400).json({ message: 'Invalid or expired token' });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await db.transaction(async (tx) => {
+            await tx.update(users).set({ password: hashedPassword }).where(eq(users.id, resetToken.userId));
+            await tx.update(appTokens).set({ usedAt: new Date() }).where(eq(appTokens.id, resetToken.id));
+            await tx.delete(userSessions).where(eq(userSessions.userId, resetToken.userId));
+        });
+        return res.status(200).json({ message: 'Password reset successfully' });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Internal server error' });

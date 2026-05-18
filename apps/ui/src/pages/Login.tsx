@@ -1,6 +1,6 @@
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useLoginMutation } from '../lib/api';
 
 export const Login = () => {
@@ -32,6 +32,7 @@ export const Login = () => {
             <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} error={!!error} helperText={error} />
             <Button variant="contained" color="primary" onClick={handleLogin} disabled={isLoading}>{isLoading ? 'Logging in...' : 'Login'}</Button>
             {error && <Typography variant="body1" color="error">{error}</Typography>}
+            <Typography variant="body2"><Link to="/forgot-password">Forgot password?</Link></Typography>
         </Box>
     );
 }

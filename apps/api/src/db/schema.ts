@@ -110,6 +110,16 @@ export const lineItemEdits = pgTable('line_item_edits', {
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
+export const appTokens = pgTable('app_tokens', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id').references(() => users.id).notNull(),
+    token: text('token').notNull().unique(),
+    type: text('type').notNull(),
+    expiresAt: timestamp('expires_at').notNull(),
+    usedAt: timestamp('used_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
 export const itemCategoryMemory = pgTable('item_category_memory', {
     id: uuid('id').primaryKey().defaultRandom(),
     organizationId: uuid('organization_id').references(() => organizations.id).notNull(),

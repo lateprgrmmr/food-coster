@@ -8,6 +8,13 @@
       "when": 1777811245593,
       "tag": "0000_rich_darkstar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779065709200,
+      "tag": "0001_wandering_robin_chapel",
+      "breakpoints": true
     }
   ]
 }
