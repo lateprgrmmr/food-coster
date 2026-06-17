@@ -10,11 +10,16 @@ import {
     Settings as SettingsIcon,
     Logout as LogoutIcon,
 } from '@mui/icons-material';
+import { useGetMeQuery } from '../lib/api';
+import { useDispatch } from 'react-redux';
+import { appApi } from '../lib/api';
 
 const drawerWidth = 240;
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
+    const { data } = useGetMeQuery();
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const navLinks = [
@@ -59,6 +64,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             icon: <LogoutIcon />,
             onClick: () => {
                 localStorage.removeItem('token');
+                dispatch(appApi.util.resetApiState());
                 navigate('/login');
             },
         },
@@ -67,7 +73,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar>
-                    <Typography variant="h6">FoodCoster</Typography>
+                    {data?.user && (<Typography variant="h6">Welcome, {data.user.email}</Typography>)}
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" sx={{ width: drawerWidth, flexShrink: 0, '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' } }}>

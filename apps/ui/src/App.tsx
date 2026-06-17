@@ -5,23 +5,23 @@ import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { Layout } from './components/Layout';
+import { Invoices } from './pages/Invoices';
+import { InvoiceDetail } from './pages/InvoiceDetail';
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={
         <ProtectedRoute>
-          <Layout>
-            <div>
-              Dashboard
-            </div>
-          </Layout>
+          <Layout>Dashboard</Layout>
         </ProtectedRoute>
       } />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/invoices" element={<Invoices />} />
+      <Route path="/invoices/:id" element={<InvoiceDetail />} />
     </Routes>
   );
 }

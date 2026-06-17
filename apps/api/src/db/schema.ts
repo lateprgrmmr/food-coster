@@ -12,6 +12,7 @@ export const users = pgTable('users', {
     organizationId: uuid('organization_id').references(() => organizations.id).notNull(),
     email: text('email').notNull().unique(),
     password: text('password').notNull(),
+    role: text('role').notNull().default('user'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

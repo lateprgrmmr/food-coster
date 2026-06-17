@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 declare global {                                                                                                                                                                                                                                                         
     namespace Express {                                                                                                                                                                                                                                                    
       interface Request {
-        user?: { id: string; organizationId: string; email: string };                                                                                                                                                                                                      
+        user?: { id: string; organizationId: string; email: string, role: string };                                                                                                                                                                                                      
       }           
     }
 }
@@ -28,6 +28,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         res.status(401).json({ message: 'Unauthorized' });
         return;
     }
-    req.user = { id: user.id, organizationId: user.organizationId, email: user.email };
+    req.user = { id: user.id, organizationId: user.organizationId, email: user.email, role: user.role };
     next();
 }

@@ -1,7 +1,8 @@
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useLoginMutation } from '../lib/api';
+import { appApi, useLoginMutation } from '../lib/api';
+import { useDispatch } from 'react-redux';
 
 export const Login = () => {
     const [email, setEmail] = useState('');
@@ -9,6 +10,8 @@ export const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const [login, { isLoading }] = useLoginMutation();
+
+    const dispatch = useDispatch();
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -18,6 +21,7 @@ export const Login = () => {
         try {
             const data = await login({ email, password }).unwrap();
             localStorage.setItem('token', data.token);
+            dispatch(appApi.util.resetApiState());
             navigate('/');
         } catch (error) {
             setError('Failed to login');
