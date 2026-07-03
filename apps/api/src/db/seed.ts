@@ -1,17 +1,26 @@
 import bcrypt from 'bcrypt';
 import db from './index.js';
 import {
-    organizations, users, locations, departments,
+    organizations, users, contacts, locations, departments,
     costCategories, subCategories, vendors, invoices, invoiceItems,
 } from './schema.js';
 
 const org = await db.insert(organizations).values({ name: 'The Rusty Spoon' }).returning().then(r => r[0]!);
 
+const contact = await db.insert(contacts).values({
+    fname: 'Sam',
+    lname: 'Rivera',
+    email: 'demo@rustyspoon.com',
+    phone: '123-456-7890',
+}).returning().then(r => r[0]!);
+
 const user = await db.insert(users).values({
     organizationId: org.id,
     email: 'demo@rustyspoon.com',
     password: await bcrypt.hash('password', 10),
+    contactId: contact.id,
 }).returning().then(r => r[0]!);
+
 
 const location = await db.insert(locations).values({
     organizationId: org.id,
@@ -140,11 +149,19 @@ await db.insert(invoiceItems).values([
   // --- Second org: demonstrates cross-org super user visibility ---
   const org2 = await db.insert(organizations).values({ name: 'Blue Harbor Cafe' }).returning().then(r => r[0]!);
 
-  const user2 = await db.insert(users).values({
-      organizationId: org2.id,
-      email: 'demo@blueharbor.com',
-      password: await bcrypt.hash('password', 10),
-  }).returning().then(r => r[0]!);
+  const contact2 = await db.insert(contacts).values({
+    fname: 'Jordan',
+    lname: 'Lee',
+    email: 'demo@blueharbor.com',
+    phone: '123-456-7890',
+}).returning().then(r => r[0]!);
+
+const user2 = await db.insert(users).values({
+    organizationId: org2.id,
+    email: 'demo@blueharbor.com',
+    password: await bcrypt.hash('password', 10),
+    contactId: contact2.id,
+}).returning().then(r => r[0]!);
 
   const location2 = await db.insert(locations).values({
       organizationId: org2.id,
@@ -173,12 +190,20 @@ await db.insert(invoiceItems).values([
   // --- Platform super user: can see invoices across ALL orgs ---
   const platformOrg = await db.insert(organizations).values({ name: 'FoodCoster Platform' }).returning().then(r => r[0]!);
 
-  await db.insert(users).values({
-      organizationId: platformOrg.id,
-      email: 'admin@foodcoster.com',
-      password: await bcrypt.hash('password', 10),
-      role: 'superuser',
-  });
+  const adminContact = await db.insert(contacts).values({
+    fname: 'Alex',
+    lname: 'Admin',
+    email: 'admin@foodcoster.com',
+    phone: '123-456-7890',
+}).returning().then(r => r[0]!);
+
+await db.insert(users).values({
+    organizationId: platformOrg.id,
+    email: 'admin@foodcoster.com',
+    password: await bcrypt.hash('password', 10),
+    role: 'superuser',
+    contactId: adminContact.id,
+});
 
 
 console.log('Seeded successfully.');

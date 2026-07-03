@@ -7,12 +7,24 @@ export const organizations = pgTable('organizations', {
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
+export const contacts = pgTable('contacts', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    fname: text('fname').notNull(),
+    lname: text('lname').notNull(),
+    email: text('email'),
+    phone: text('phone'),
+    title: text('title'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+})
+
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().defaultRandom(),
     organizationId: uuid('organization_id').references(() => organizations.id).notNull(),
     email: text('email').notNull().unique(),
     password: text('password').notNull(),
     role: text('role').notNull().default('user'),
+    contactId: uuid('contact_id').references(() => contacts.id).notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

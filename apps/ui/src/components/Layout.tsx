@@ -73,7 +73,15 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar>
-                    {data?.user && (<Typography variant="h6">Welcome, {data.user.email}</Typography>)}
+                    {data?.user && (
+                        <Typography
+                            variant="body2"
+                            onClick={() => navigate('/profile')}
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            {data.user.fname} {data.user.lname}
+                        </Typography>
+                    )}
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" sx={{ width: drawerWidth, flexShrink: 0, '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' } }}>

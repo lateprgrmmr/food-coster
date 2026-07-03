@@ -22,6 +22,20 @@
       "when": 1781680103140,
       "tag": "0002_skinny_skrulls",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1781688009159,
+      "tag": "0003_short_rictor",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1781689788330,
+      "tag": "0004_skinny_bucky",
+      "breakpoints": true
     }
   ]
 }

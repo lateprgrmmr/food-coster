@@ -7,6 +7,7 @@ import { ResetPassword } from './pages/ResetPassword';
 import { Layout } from './components/Layout';
 import { Invoices } from './pages/Invoices';
 import { InvoiceDetail } from './pages/InvoiceDetail';
+import { Profile } from './pages/Profile';
 
 function App() {
   return (
@@ -22,6 +23,14 @@ function App() {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/invoices" element={<Invoices />} />
       <Route path="/invoices/:id" element={<InvoiceDetail />} />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <Layout>
+            <Profile />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
     </Routes>
   );
 }

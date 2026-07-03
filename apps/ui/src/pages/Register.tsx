@@ -8,16 +8,19 @@ export const Register = () => {
     const [password, setPassword] = useState('');
     const [organizationName, setOrganizationName] = useState('');
     const [error, setError] = useState('');
+    const [fname, setFname] = useState('');
+    const [lname, setLname] = useState('');
+
     const navigate = useNavigate();
     const [register, { isLoading }] = useRegisterMutation();
 
     const handleRegister = async () => {
-        if (!email || !password || !organizationName) {
+        if (!email || !password || !organizationName || !fname || !lname) {
             setError('All fields are required');
             return;
         }
         try {
-            const data = await register({ email, password, organizationName }).unwrap();
+            const data = await register({ email, password, organizationName, fname, lname }).unwrap();
             localStorage.setItem('token', data.token);
             navigate('/');
         } catch (error) {
@@ -29,6 +32,8 @@ export const Register = () => {
     return (
         <Box>
             <Typography variant="h1">Register</Typography>
+            <TextField label="First Name" value={fname} onChange={(e) => setFname(e.target.value)} error={!!error} helperText={error} />
+            <TextField label="Last Name" value={lname} onChange={(e) => setLname(e.target.value)} error={!!error} helperText={error} />
             <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} error={!!error} helperText={error} />
             <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} error={!!error} helperText={error} />
             <TextField label="Organization Name" value={organizationName} onChange={(e) => setOrganizationName(e.target.value)} error={!!error} helperText={error} />

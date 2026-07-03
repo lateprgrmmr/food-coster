@@ -40,6 +40,7 @@ export const appApi = createApi({
             return headers;
         }
     }),
+    tagTypes: ['Me'],
     endpoints: (builder) => ({
         login: builder.mutation({
             query: (body) => ({
@@ -72,12 +73,27 @@ export const appApi = createApi({
         getMe: builder.query<{
             user: {
                 id: string;
-                organizationId: string;
                 email: string;
                 role: string;
+                organizationId: string;
+                contactId: string;
+                fname: string;
+                lname: string;
+                contactEmail: string;
+                phone: string;
+                title: string;
             }
         }, void>({
             query: () => '/me',
+            providesTags: ['Me'],
+        }),
+        updateProfile: builder.mutation({
+            query: (body) => ({
+                url: '/me',
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['Me'],
         }),
         getInvoices: builder.query<InvoiceListItem[], void>({
             query: () => '/invoices',
@@ -96,4 +112,5 @@ export const {
     useGetMeQuery,
     useGetInvoicesQuery,
     useGetInvoiceQuery,
+    useUpdateProfileMutation,
 } = appApi;

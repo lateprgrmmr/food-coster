@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import bcrypt from 'bcrypt';
 import db from '../db';
-import { organizations, users, userSessions, appTokens } from '../db/schema';
+import { organizations, users, userSessions, appTokens, contacts } from '../db/schema';
 import { randomBytes } from 'crypto';
 import { and, eq, gt, isNull } from 'drizzle-orm';
 import { authenticate } from '../middleware/auth';
@@ -9,16 +9,26 @@ import { authenticate } from '../middleware/auth';
 const router: Router = express.Router();
 
 router.post('/register', async (req, res) => {
-    const { email, password, organizationName } = req.body;
-    if (!email || !password || !organizationName) {
+    const { email, password, organizationName, fname, lname } = req.body;
+    if (!email || !password || !organizationName || !fname || !lname) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await db.transaction(async (tx) => {
             const [organization] = await tx.insert(organizations).values({ name: organizationName }).returning();
-            const [user] = await tx.insert(users).values({ email, password: hashedPassword, organizationId: organization!.id }).returning();
-            return { organization, user };
+            const [contact] = await tx.insert(contacts).values({
+                fname,
+                lname,
+                email
+            }).returning();
+            const [user] = await tx.insert(users).values({
+                email: email,
+                password: hashedPassword,
+                organizationId: organization!.id,
+                contactId: contact!.id
+            }).returning();
+            return { organization, contact, user };
         });
         const sessionToken = randomBytes(32).toString('hex');
         await db.insert(userSessions).values({ userId: result.user!.id, sessionToken, expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) }); // 30 days
