@@ -76,6 +76,7 @@ export const subCategories = pgTable('sub_categories', {
 export const vendors = pgTable('vendors', {
     id: uuid('id').primaryKey().defaultRandom(),
     organizationId: uuid('organization_id').references(() => organizations.id).notNull(),
+    contactId: uuid('contact_id').references(() => contacts.id),
     name: text('name').notNull(),
     description: text('description'),
     createdAt: timestamp('created_at').notNull().defaultNow(),

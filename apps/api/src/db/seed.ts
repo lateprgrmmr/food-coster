@@ -50,12 +50,19 @@ const [produce, meat, dairy, dryGoods, disposables, beer, spirits, nonAlc] = awa
     { costCategoryId: beverageCost!.id, name: 'Non-Alcoholic Beverages' },
 ]).returning();
 
+const [syscoContact, glazersContact] = await db.insert(contacts).values([
+    { fname: 'Marcus', lname: 'Chen', email: 'marcus.chen@sysco.com', phone: '312-555-0142', title: 'Account Manager' },
+    { fname: 'Priya', lname: 'Nair', email: 'priya.nair@sglazers.com', phone: '312-555-0199', title: 'Sales Rep' },
+]).returning();
+
+
 const [sysco, usfoods, localProduce, southernGlazers] = await db.insert(vendors).values([
-    { organizationId: org.id, name: 'Sysco', description: 'Broadline food distributor' },
+    { organizationId: org.id, name: 'Sysco', description: 'Broadline food distributor', contactId: syscoContact!.id },
     { organizationId: org.id, name: 'US Foods', description: 'Broadline food distributor' },
     { organizationId: org.id, name: 'Local Produce Co.', description: 'Local farm-direct produce' },
-    { organizationId: org.id, name: "Southern Glazer's", description: 'Beverage distributor' },
+    { organizationId: org.id, name: "Southern Glazer's", description: 'Beverage distributor', contactId: glazersContact!.id },
 ]).returning();
+
 
 // Invoice 1: Sysco weekly food order
 const inv1 = await db.insert(invoices).values({

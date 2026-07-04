@@ -36,6 +36,13 @@
       "when": 1781689788330,
       "tag": "0004_skinny_bucky",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1783048854954,
+      "tag": "0005_daily_pride",
+      "breakpoints": true
     }
   ]
 }

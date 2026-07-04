@@ -1,11 +1,12 @@
 import express from 'express';
 import { sql, eq } from 'drizzle-orm';
 import db from './db';
-import authRoutes from './routes/auth';
-import invoiceRoutes from './routes/invoices';
 import { authenticate } from './middleware/auth';
 import cors from 'cors';
 import { users, contacts } from './db/schema';
+import authRoutes from './routes/auth';
+import invoiceRoutes from './routes/invoices';
+import vendorRoutes from './routes/vendors';
 
 const app = express();
 app.use(cors());
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/invoices', invoiceRoutes);
+app.use('/vendors', vendorRoutes);
 
 app.get('/health', async (req, res) => {
   const healthCheck = await db.execute(sql`SELECT 1;`);

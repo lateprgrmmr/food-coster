@@ -8,6 +8,8 @@ import { Layout } from './components/Layout';
 import { Invoices } from './pages/Invoices';
 import { InvoiceDetail } from './pages/InvoiceDetail';
 import { Profile } from './pages/Profile';
+import { Vendors } from './pages/Vendors';
+import { VendorDetail } from './pages/VendorDetail';
 
 function App() {
   return (
@@ -30,7 +32,20 @@ function App() {
           </Layout>
         </ProtectedRoute>
       } />
-
+      <Route path="/vendors" element={
+        <ProtectedRoute>
+          <Layout>
+            <Vendors />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/vendors/:id" element={
+        <ProtectedRoute>
+          <Layout>
+            <VendorDetail />
+          </Layout>
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 }

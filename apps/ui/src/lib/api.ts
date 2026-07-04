@@ -30,6 +30,29 @@ export type InvoiceDetail = {
     items: InvoiceItem[];
 }
 
+export type Vendor = {
+    id: string;
+    organizationId: string;
+    name: string;
+    description: string;
+    contactId: string;
+    contactFname: string;
+    contactLname: string;
+    contactEmail: string;
+    contactPhone: string;
+    contactTitle: string;
+}
+
+export type VendorInput = {
+    name: string;
+    description?: string;
+    contactFname?: string;
+    contactLname?: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    contactTitle?: string;
+}
+
 export const appApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:5521', prepareHeaders: (headers) => {
@@ -40,7 +63,7 @@ export const appApi = createApi({
             return headers;
         }
     }),
-    tagTypes: ['Me'],
+    tagTypes: ['Me', 'Vendor'],
     endpoints: (builder) => ({
         login: builder.mutation({
             query: (body) => ({
@@ -101,6 +124,30 @@ export const appApi = createApi({
         getInvoice: builder.query<InvoiceDetail, string>({
             query: (id) => `/invoices/${id}`,
         }),
+        getVendors: builder.query<Vendor[], void>({
+            query: () => '/vendors',
+            providesTags: ['Vendor'],
+        }),
+        getVendor: builder.query<Vendor, string>({
+            query: (id) => `/vendors/${id}`,
+            providesTags: (_res, _err, id) => [{ type: 'Vendor', id }],
+        }),
+        createVendor: builder.mutation<Vendor, VendorInput>({
+            query: (body) => ({
+                url: '/vendors',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Vendor'],
+        }),
+        updateVendor: builder.mutation<{ message: string }, VendorInput & { id: string }>({
+            query: ({ id, ...body }) => ({
+                url: `/vendors/${id}`,
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: (_res, _err, arg ) => ['Vendor', { type: 'Vendor', id: arg.id }],
+        })
     }),
 });
 
@@ -113,4 +160,8 @@ export const {
     useGetInvoicesQuery,
     useGetInvoiceQuery,
     useUpdateProfileMutation,
+    useGetVendorsQuery,
+    useGetVendorQuery,
+    useCreateVendorMutation,
+    useUpdateVendorMutation,
 } = appApi;
