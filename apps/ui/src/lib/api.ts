@@ -53,6 +53,23 @@ export type VendorInput = {
     contactTitle?: string;
 }
 
+export type Location = {
+    id: string;
+    name: string;
+    address: string;
+}
+
+export type NewInvoiceInput = {
+    vendorId: string;
+    locationId: string;
+    invoiceNumber?: string;
+    invoiceDate?: string;
+    items: {
+        description: string;
+        quantity: number;
+        unitPrice: string;
+    }[];
+}
 export const appApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:5521', prepareHeaders: (headers) => {
@@ -63,7 +80,7 @@ export const appApi = createApi({
             return headers;
         }
     }),
-    tagTypes: ['Me', 'Vendor'],
+    tagTypes: ['Me', 'Vendor', 'Invoice'],
     endpoints: (builder) => ({
         login: builder.mutation({
             query: (body) => ({
@@ -120,9 +137,22 @@ export const appApi = createApi({
         }),
         getInvoices: builder.query<InvoiceListItem[], void>({
             query: () => '/invoices',
+            providesTags: ['Invoice'],
         }),
         getInvoice: builder.query<InvoiceDetail, string>({
             query: (id) => `/invoices/${id}`,
+            providesTags: (_res, _err, id) => [{ type: 'Invoice', id }],
+        }),
+        createInvoice: builder.mutation<InvoiceDetail, NewInvoiceInput>({
+            query: (body) => ({
+                url: '/invoices',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Invoice'],
+        }),
+        getLocations: builder.query<Location[], void>({
+            query: () => '/locations',
         }),
         getVendors: builder.query<Vendor[], void>({
             query: () => '/vendors',
@@ -147,7 +177,8 @@ export const appApi = createApi({
                 body,
             }),
             invalidatesTags: (_res, _err, arg ) => ['Vendor', { type: 'Vendor', id: arg.id }],
-        })
+        }),
+
     }),
 });
 
@@ -164,4 +195,6 @@ export const {
     useGetVendorQuery,
     useCreateVendorMutation,
     useUpdateVendorMutation,
+    useGetLocationsQuery,
+    useCreateInvoiceMutation,
 } = appApi;

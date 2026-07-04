@@ -23,7 +23,10 @@ export const Invoices = () => {
             <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/')} sx={{ mb: 2 }}>
                 Back to Home
             </Button>
-            <Typography variant="h5" sx={{ mb: 2 }}>Invoices</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h5">Invoices</Typography>
+                <Button variant="contained" onClick={() => navigate('/invoices/new')}>New Invoice</Button>
+            </Box>
             <Paper>
                 <Table>
                     <TableHead>

@@ -10,6 +10,7 @@ import { InvoiceDetail } from './pages/InvoiceDetail';
 import { Profile } from './pages/Profile';
 import { Vendors } from './pages/Vendors';
 import { VendorDetail } from './pages/VendorDetail';
+import { NewInvoice } from './pages/NewInvoice';
 
 function App() {
   return (
@@ -23,8 +24,27 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/invoices" element={<Invoices />} />
-      <Route path="/invoices/:id" element={<InvoiceDetail />} />
+      <Route path="/invoices" element={
+        <ProtectedRoute>
+          <Layout>
+            <Invoices />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/invoices/:id" element={
+        <ProtectedRoute>
+          <Layout>
+            <InvoiceDetail />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/invoices/new" element={
+        <ProtectedRoute>
+          <Layout>
+            <NewInvoice />
+          </Layout>
+        </ProtectedRoute>
+      } />
       <Route path="/profile" element={
         <ProtectedRoute>
           <Layout>
